@@ -4,6 +4,7 @@
 #include "event_data.h"
 #include "event_object_movement.h"
 #include "item.h"
+#include "overworld.h"
 #include "random.h"
 #include "script_menu.h"
 #include "string_util.h"
