@@ -11,6 +11,37 @@ u16 const gDefaultPaletteLayerMasks[PALETTE_MODIFY_LAYER_COUNT] =
     RGB(0, 0, 31),
 };
 
+// Detect common skin tones in 15-bit GBA palettes.
+static bool8 IsSkinTone(u16 color)
+{
+    u8 r = color & 0x1F;
+    u8 g = (color >> 5) & 0x1F;
+    u8 b = (color >> 10) & 0x1F;
+
+    // Exclude neutral greys, whites and blacks.
+    if (r < 18 || g < 12 || b < 10)
+        return FALSE;
+
+    // Skin tones generally have a warm red/pink component.
+    if (r < g)
+        return FALSE;
+
+    // Exclude highly saturated reds and oranges.
+    if (r - g > 12)
+        return FALSE;
+
+    // Allow the blue component to be slightly above green,
+    // as happens with some pink skin palettes.
+    if (g > b + 7 || b > g + 3)
+        return FALSE;
+
+    // Require some warm colour difference from neutral grey.
+    if (r - b < 2)
+        return FALSE;
+
+    return TRUE;
+}
+
 u16 HSVToRGB(struct HSV hsv)
 {
     u8 r, g, b;
