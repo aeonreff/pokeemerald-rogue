@@ -513,12 +513,19 @@ void Rogue_ModifyPaletteByLayersHueShift(u16 const* basePal, u16 const* layerPal
     u16 baseCol, layerCol, layerMask;
 
     // Calculate each colour in the palette
-    for(i = 0; i < 16; ++i)
-    {
-        baseCol = basePal[i];
-        layerCol = layerPal[i];
+for(i = 0; i < 16; ++i)
+{
+    baseCol = basePal[i];
+    layerCol = layerPal[i];
 
-        for(l = 0; l < PALETTE_MODIFY_LAYER_COUNT; ++l)
+    // Preserve original skin tones.
+    if (IsSkinTone(baseCol))
+    {
+        writeBuffer[i] = baseCol;
+        continue;
+    }
+
+    for(l = 0; l < PALETTE_MODIFY_LAYER_COUNT; ++l)
         {
             layerMask = layerMasks[l];
 
