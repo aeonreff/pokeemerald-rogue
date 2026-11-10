@@ -537,8 +537,9 @@ for(i = 0; i < 16; ++i)
 
     // Proteger el color de índice 2 (piel).
     if (i == 2)
-        continue;
-
+     {   
+         continue;
+     }
     // Modificación del color
 
     for(l = 0; l < PALETTE_MODIFY_LAYER_COUNT; ++l)
