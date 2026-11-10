@@ -534,6 +534,13 @@ for(i = 0; i < 16; ++i)
         writeBuffer[i] = baseCol;
         continue;
     }
+    
+    // Proteger el color de índice 2 (piel).
+    if (i == 2)
+    {
+        continue;
+    }
+    // Modificación del color
 
     for(l = 0; l < PALETTE_MODIFY_LAYER_COUNT; ++l)
         {
