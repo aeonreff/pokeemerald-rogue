@@ -11,47 +11,6 @@ u16 const gDefaultPaletteLayerMasks[PALETTE_MODIFY_LAYER_COUNT] =
     RGB(0, 0, 31),
 };
 
-// Preserve neutral colours and a broad range of skin-like tones.
-static bool8 IsSkinTone(u16 color)
-{
-    u8 r = color & 0x1F;
-    u8 g = (color >> 5) & 0x1F;
-    u8 b = (color >> 10) & 0x1F;
-
-    u8 max = r;
-    u8 min = r;
-
-    if(g > max)
-        max = g;
-    if(b > max)
-        max = b;
-
-    if(g < min)
-        min = g;
-    if(b < min)
-        min = b;
-
-    // Preserve neutral colours: black, greys and white.
-    if(max - min <= 2)
-        return TRUE;
-
-    // Preserve muted skin-like colours across all brightness levels.
-    if(r >= g && r >= b)
-    {
-        if(r - g <= 9 && r - b <= 9)
-            return TRUE;
-    }
-
-    // Preserve pink skin tones.
-    if(r >= b && b > g)
-    {
-        if(r - g <= 9 && r - b <= 6)
-            return TRUE;
-    }
-
-    return FALSE;
-}
-
 u16 HSVToRGB(struct HSV hsv)
 {
     u8 r, g, b;
@@ -134,6 +93,18 @@ struct HSV RGBtoHSV(u16 rgb)
     return hsv;
 }
 
+// Preserve neutral colours and a broad range of skin-like tones.
+static bool8 IsSkinTone(struct HSV hsv)
+{
+    bool8 warmHue = hsv.h <= 26 || hsv.h >= 250;
+    return warmHue && hsv.s >= 25 && hsv.s <= 150 && hsv.v >= 120;
+}
+
+static bool8 IsColourExemptFromHueTint(u8 slot, struct HSV hsv)
+{
+    return slot == 0 || slot == 2 || hsv.s == 0 || hsv.v <= 20 || IsSkinTone(hsv);
+}
+
 static bool8 IsColourExemptFromHueTint(u8 slot, struct HSV hsv )
 {
     return slot == 0 || hsv.s <= 0 || hsv.v <= 20;
@@ -141,28 +112,31 @@ static bool8 IsColourExemptFromHueTint(u8 slot, struct HSV hsv )
 
 static u8 GetHueDistance(u8 a, u8 b)
 {
-    return a < b ? b - a : a - b;
+    u8 d = (u8)(a - b);
+    return d < 128 ? d : 256 - d;
 }
 
 static u8 GetAverageTintHue(u16 const* inputPal)
 {
-    u8 i;
-    u32 total = 0;
+    u8 i, ref = 0;
+    s32 sum = 0;
     u32 count = 0;
 
     for(i = 0; i < 16; ++i)
     {
-        u16 rgb = inputPal[i];
-        struct HSV hsv = RGBtoHSV(rgb);
+        struct HSV hsv = RGBtoHSV(inputPal[i]);
 
-        if(!IsColourExemptFromHueTint(i ,hsv))
+        if(!IsColourExemptFromHueTint(i, hsv))
         {
-            total += hsv.h;
+            if(count == 0)
+                ref = hsv.h;
+
+            sum += (s8)(u8)(hsv.h - ref);
             ++count;
         }
     }
 
-    return SAFE_DIV(total, count);
+    return count == 0 ? 0 : (u8)(ref + sum / (s32)count);
 }
 
 static u8 GetFurthestTintHue(u16 const* inputPal, u8 targetHue)
@@ -332,16 +306,16 @@ static void CalculateNearFarHues(u16 const* inputPal, u8 avgHue, u8* nearHue, u8
         }
     }
 
-    if(count < 4)
-    {
-        *nearHue = sortedHues[0];
-        *farHue = sortedHues[count - 1];
-    }
-    else
-    {
-        *nearHue = sortedHues[0];
-        *farHue = sortedHues[count - 1];
-    }
+  if(count == 0)
+{
+    *nearHue = avgHue;
+    *farHue = avgHue;
+}
+else
+{
+    *nearHue = sortedHues[0];
+    *farHue = sortedHues[count - 1];
+ }
 }
 
 void Rogue_GenerateLayerPaletteByHue(u16 const* inputPal, u16 const* layerRefPal, u16* outputLayers)
