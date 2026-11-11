@@ -1111,8 +1111,8 @@ u32 RogueGift_CreateDynamicMonId(u8 rarity, u16 species)
     else if(compressedDataUntyped.format == COMPRESSED_FORMAT_MON_TYPE)
     {
         struct CompressedDynamicData_MonType* compressedData = (struct CompressedDynamicData_MonType*)&compressedDataUntyped;
-        compressedData->typeSlot = Random() % 1;
-        compressedData->typeMoveFlip = Random() % 1;
+        compressedData->typeSlot = Random() % 2;
+        compressedData->typeMoveFlip = Random() % 2;
 
         switch (rarity)
         {
@@ -1507,6 +1507,12 @@ bool8 RogueGift_TryApplyPaletteModify(u32 id, bool8 isShiny, u16 const* inputPal
 
         if(type2 != TYPE_NONE)
             colorsToApply[1] = sTypeTintColors[type2];
+
+// Un solo tipo: tiñe ambas capas con ese color
+if(type2 == TYPE_NONE)
+    colorsToApply[1] = colorsToApply[0];
+else if(type1 == TYPE_NONE)
+    colorsToApply[0] = colorsToApply[1];
 
         if(layerRefPal == NULL)
         {
