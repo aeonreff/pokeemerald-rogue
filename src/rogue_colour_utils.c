@@ -105,11 +105,6 @@ static bool8 IsColourExemptFromHueTint(u8 slot, struct HSV hsv)
     return slot == 0 || slot == 2 || hsv.s == 0 || hsv.v <= 20 || IsSkinTone(hsv);
 }
 
-static bool8 IsColourExemptFromHueTint(u8 slot, struct HSV hsv )
-{
-    return slot == 0 || hsv.s <= 0 || hsv.v <= 20;
-}
-
 static u8 GetHueDistance(u8 a, u8 b)
 {
     u8 d = (u8)(a - b);
