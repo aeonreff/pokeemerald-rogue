@@ -529,17 +529,17 @@ for(i = 0; i < 16; ++i)
     layerCol = layerPal[i];
 
     // Preserve original skin tones.
-    if (IsSkinTone(baseCol))
-    {
-        writeBuffer[i] = baseCol;
-        continue;
-    }
+    //if (IsSkinTone(baseCol))
+    //{
+     //   writeBuffer[i] = baseCol;
+     //   continue;
+    //}
     
     // Proteger el color de índice 2 (piel).
-    if (i == 2)
-    {
-        continue;
-    }
+    //if (i == 2)
+    //{
+    //    continue;
+    //}
     // Modificación del color
 
     for(l = 0; l < PALETTE_MODIFY_LAYER_COUNT; ++l)
