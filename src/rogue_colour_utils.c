@@ -99,10 +99,19 @@ struct HSV RGBtoHSV(u16 rgb)
 #define SKIN_PINK_HUE    220   // desde aquí hasta 255 (y de 0 a 26) es matiz de piel
 #define SKIN_SAT_MAX     120   // más saturado que esto es ropa o cinta, no piel
 
+#define MOUTH_HUE_MAX    10    // solo rojos/anaranjados (la boca tiene matiz 2-7)
+#define MOUTH_SAT_MAX    215   // la sombra de la boca llega a saturación 210
+
+#define SKIN_DARK_SAT_MAX  110   // contorno oscuro de piel: poco saturado (la ropa marrón tiene 120+)
+
 static bool8 IsSkinTone(struct HSV hsv)
 {
     bool8 warmHue = hsv.h <= SKIN_YELLOW_HUE || hsv.h >= SKIN_PINK_HUE;
-    return warmHue && hsv.s >= 8 && hsv.s <= SKIN_SAT_MAX && hsv.v >= 120;
+    bool8 skin = warmHue && hsv.s >= 8 && hsv.s <= SKIN_SAT_MAX && hsv.v >= 120;
+    bool8 darkSkin = warmHue && hsv.s >= 8 && hsv.s <= SKIN_DARK_SAT_MAX && hsv.v > TINT_MIN_VALUE;
+    bool8 mouth = hsv.h <= MOUTH_HUE_MAX && hsv.s <= MOUTH_SAT_MAX && hsv.v >= 150;
+
+    return skin || darkSkin || mouth;
 }
 
 static bool8 IsColourExemptFromHueTint(u8 slot, struct HSV hsv)
