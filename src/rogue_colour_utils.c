@@ -102,7 +102,7 @@ struct HSV RGBtoHSV(u16 rgb)
 #define MOUTH_HUE_MAX    10    // solo rojos/anaranjados (la boca tiene matiz 2-7)
 #define MOUTH_SAT_MAX    215   // la sombra de la boca llega a saturación 210
 
-#define SKIN_DARK_SAT_MAX  110   // contorno oscuro de piel: poco saturado (la ropa marrón tiene 120+)
+#define SKIN_DARK_SAT_MAX  85   // contorno oscuro de piel: poco saturado (la ropa marrón tiene 120+)
 
 static bool8 IsSkinTone(struct HSV hsv)
 {
