@@ -95,12 +95,13 @@ struct HSV RGBtoHSV(u16 rgb)
 
 // Preserve neutral colours and a broad range of skin-like tones.
 #define TINT_MIN_VALUE   80    // por debajo de este brillo se considera contorno/negro
+#define SKIN_YELLOW_HUE  35    // límite superior (piel clara/amarillenta)
 #define SKIN_PINK_HUE    220   // desde aquí hasta 255 (y de 0 a 26) es matiz de piel
 #define SKIN_SAT_MAX     120   // más saturado que esto es ropa o cinta, no piel
 
 static bool8 IsSkinTone(struct HSV hsv)
 {
-    bool8 warmHue = hsv.h <= 26 || hsv.h >= SKIN_PINK_HUE;
+    bool8 warmHue = hsv.h <= SKIN_YELLOW_HUE || hsv.h >= SKIN_PINK_HUE;
     return warmHue && hsv.s >= 8 && hsv.s <= SKIN_SAT_MAX && hsv.v >= 120;
 }
 
