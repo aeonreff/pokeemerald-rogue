@@ -105,7 +105,7 @@ struct HSV RGBtoHSV(u16 rgb)
 
 #define SKIN_ORANGE_HUE    12   // hasta aquí (y desde SKIN_PINK_HUE) vale SKIN_SAT_MAX
 #define SKIN_PALE_SAT_MAX  60   // por encima de este matiz, solo es piel si es muy pálida
-#define SKIN_DARK_SAT_MAX  85   // contorno oscuro de piel: poco saturado (la ropa marrón tiene 120+)
+#define SKIN_DARK_SAT_MAX  110   // contorno oscuro de piel: poco saturado (la ropa marrón tiene 120+)
 
 static bool8 IsSkinTone(struct HSV hsv)
 {
