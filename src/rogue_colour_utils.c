@@ -102,14 +102,21 @@ struct HSV RGBtoHSV(u16 rgb)
 #define MOUTH_HUE_MAX    10    // solo rojos/anaranjados (la boca tiene matiz 2-7)
 #define MOUTH_SAT_MAX    215   // la sombra de la boca llega a saturación 210
 
-#define SKIN_DARK_SAT_MAX  85   // contorno oscuro de piel: poco saturado (la ropa marrón tiene 120+)
+#define SKIN_ORANGE_HUE    12    // hasta aquí (y desde SKIN_PINK_HUE) vale SKIN_SAT_MAX
+#define SKIN_PALE_SAT_MAX  60    // por encima de este matiz, solo es piel si es muy pálida
+#define MOUTH_SAT_MIN      150   // la boca real tiene saturación 170-210; el salmón, 120-135
 
 static bool8 IsSkinTone(struct HSV hsv)
 {
-    bool8 warmHue = hsv.h <= SKIN_YELLOW_HUE || hsv.h >= SKIN_PINK_HUE;
-    bool8 skin = warmHue && hsv.s >= 8 && hsv.s <= SKIN_SAT_MAX && hsv.v >= 120;
-    bool8 darkSkin = warmHue && hsv.s >= 8 && hsv.s <= SKIN_DARK_SAT_MAX && hsv.v > TINT_MIN_VALUE;
-    bool8 mouth = hsv.h <= MOUTH_HUE_MAX && hsv.s <= MOUTH_SAT_MAX && hsv.v >= 150;
+    bool8 pinkOrOrange = hsv.h <= SKIN_ORANGE_HUE || hsv.h >= SKIN_PINK_HUE;
+    bool8 yellowish = hsv.h > SKIN_ORANGE_HUE && hsv.h <= SKIN_YELLOW_HUE;
+
+    bool8 skin = hsv.s >= 8 && hsv.v >= 120
+        && ((pinkOrOrange && hsv.s <= SKIN_SAT_MAX) || (yellowish && hsv.s <= SKIN_PALE_SAT_MAX));
+    bool8 darkSkin = (pinkOrOrange || yellowish) && hsv.s >= 8
+        && hsv.s <= SKIN_DARK_SAT_MAX && hsv.v > TINT_MIN_VALUE;
+    bool8 mouth = hsv.h <= MOUTH_HUE_MAX && hsv.s >= MOUTH_SAT_MIN
+        && hsv.s <= MOUTH_SAT_MAX && hsv.v >= 150;
 
     return skin || darkSkin || mouth;
 }
