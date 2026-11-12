@@ -97,7 +97,7 @@ struct HSV RGBtoHSV(u16 rgb)
 #define TINT_MIN_VALUE     80    // por debajo de este brillo se considera contorno/negro
 #define SKIN_YELLOW_HUE    35    // límite superior (piel clara/amarillenta)
 #define SKIN_PINK_HUE      220   // desde aquí hasta 255 (y de 0 a 26) es matiz de piel
-#define SKIN_SAT_MAX       120   // más saturado que esto es ropa o cinta, no piel
+#define SKIN_SAT_MAX       122   // más saturado que esto es ropa o cinta, no piel
 
 #define MOUTH_HUE_MAX      10   // solo rojos/anaranjados (la boca tiene matiz 2-7)
 #define MOUTH_SAT_MAX      215  // la sombra de la boca llega a saturación 210
@@ -105,7 +105,7 @@ struct HSV RGBtoHSV(u16 rgb)
 
 #define SKIN_ORANGE_HUE    12   // hasta aquí (y desde SKIN_PINK_HUE) vale SKIN_SAT_MAX
 #define SKIN_PALE_SAT_MAX  60   // por encima de este matiz, solo es piel si es muy pálida
-#define SKIN_DARK_SAT_MAX  110   // contorno oscuro de piel: poco saturado (la ropa marrón tiene 120+)
+#define SKIN_DARK_SAT_MAX  85   // contorno oscuro de piel: poco saturado (la ropa marrón tiene 120+)
 
 static bool8 IsSkinTone(struct HSV hsv)
 {
