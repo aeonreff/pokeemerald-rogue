@@ -94,15 +94,19 @@ struct HSV RGBtoHSV(u16 rgb)
 }
 
 // Preserve neutral colours and a broad range of skin-like tones.
+#define TINT_MIN_VALUE   75    // por debajo de este brillo se considera contorno/negro
+#define SKIN_PINK_HUE    230   // desde aquí hasta 255 (y de 0 a 26) es matiz de piel
+#define SKIN_SAT_MAX     120   // más saturado que esto es ropa o cinta, no piel
+
 static bool8 IsSkinTone(struct HSV hsv)
 {
-    bool8 warmHue = hsv.h <= 26 || hsv.h >= 250;
-    return warmHue && hsv.s >= 25 && hsv.s <= 150 && hsv.v >= 120;
+    bool8 warmHue = hsv.h <= 26 || hsv.h >= SKIN_PINK_HUE;
+    return warmHue && hsv.s >= 8 && hsv.s <= SKIN_SAT_MAX && hsv.v >= 120;
 }
 
 static bool8 IsColourExemptFromHueTint(u8 slot, struct HSV hsv)
 {
-    return slot == 0 || slot == 2 || hsv.s == 0 || hsv.v <= 20 || IsSkinTone(hsv);
+    return slot == 0 || slot == 2 || hsv.s == 0 || hsv.v <= TINT_MIN_VALUE || IsSkinTone(hsv);
 }
 
 static u8 GetHueDistance(u8 a, u8 b)
