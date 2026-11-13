@@ -2478,7 +2478,7 @@ bool8 Rogue_IsItemEnabled(u16 itemId)
             {
                 return TRUE;
             }
-            return FALSE;
+            return TRUE;//2026 hub
             break;
 
 #ifdef ROGUE_EXPANSION
@@ -9399,8 +9399,11 @@ void Rogue_OpenMartQuery(u16 difficulty, u16 itemCategory, u16* minSalePrice)
         if(Rogue_IsRunActive())
         {
             // Always allow to always buy revives if players have this on
-            if(itemCategory == ROGUE_SHOP_GENERAL && !Rogue_ShouldReleaseFaintedMons())
+            if(itemCategory == ROGUE_SHOP_GENERAL)//2026 && !Rogue_ShouldReleaseFaintedMons())
+            { 
                 RogueMiscQuery_EditElement(QUERY_FUNC_INCLUDE, ITEM_REVIVE);
+                RogueMiscQuery_EditElement(QUERY_FUNC_INCLUDE, ITEM_MAX_REVIVE);
+            }
 
             if(applyRandomChance)
             {
