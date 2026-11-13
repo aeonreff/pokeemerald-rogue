@@ -1375,7 +1375,7 @@ void RogueGift_EnsureDynamicCustomMonsAreValid()
         {
             u8 rarity = RandomRarity();
 
-            gRogueSaveBlock->dynamicUniquePokemon[i].countDown = 60 + 10 * i; // Time remaining is based on the slot
+            gRogueSaveBlock->dynamicUniquePokemon[i].countDown = 10 + 2 * i; // Time remaining is based on the slot (60 + 10 * i)
 
             if(rarity == UNIQUE_RARITY_EXOTIC)
             {
